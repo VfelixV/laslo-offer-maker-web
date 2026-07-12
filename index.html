@@ -1298,11 +1298,6 @@ printButtonV2.addEventListener('click',()=>{const offer=offers.find(item=>item.i
   updateDataSummary();renderOffers();
 })();
 
-(function(){
-  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(error=>console.warn('Offline mode unavailable',error)));
-  document.body.classList.add('web-version');
-})();
-
 </script>
 </body>
 </html>
