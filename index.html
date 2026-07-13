@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#f7f7f3">
   <meta name="description" content="LASLO AG — interne Offerten für Umzug, Reinigung und Entsorgung">
   <title>LASLO AG — Offerten</title>
+  <link rel="stylesheet" href="room-instances.css">
 </head>
 <body>
   <div class="app-shell">
@@ -114,7 +115,9 @@
       <section class="view" id="roomsView">
         <div class="create-header"><button class="back" data-view="client">←</button><div><p class="eyebrow">Neue Offerte</p><h1>Checkliste</h1></div><span class="step-count">3 / 7</span></div>
         <div class="progress rooms-progress"><span></span></div>
+        <div class="property-type-inline"><label>Objekttyp<select id="servicePropertyType"><option value="">Auswählen</option><option value="Wohnung">Wohnung</option><option value="Haus">Haus</option><option value="Gewerbe">Gewerbe</option></select></label></div>
         <p class="helper">Wähle einen Raum und füge die vorhandenen Möbel hinzu.</p>
+        <div class="room-add-control"><select id="movingRoomType"></select><button type="button" id="addMovingRoom">＋ Raum hinzufügen</button></div>
         <div class="room-grid" id="roomGrid">
           <button data-room="bedroom"><span>▱</span><strong>Schlafzimmer</strong><small>0 Artikel</small></button>
           <button data-room="bathroom"><span>◫</span><strong>Badezimmer</strong><small>0 Artikel</small></button>
@@ -137,8 +140,9 @@
         <div class="choice-chips" id="propertyState"><button>Leer</button><button>Möbliert</button><button>Stark verschmutzt</button></div>
         <div class="cleaning-overview"><label>Objekttyp<select id="cleanPropertyType"><option value="">Auswählen</option><option>Wohnung</option><option>Haus</option><option>Gewerbe</option></select></label><label>Zimmer<input id="cleanRoomCount" type="number" min="0" inputmode="numeric"></label><label>Etagen<input id="cleanFloorCount" type="number" min="0" inputmode="numeric"></label><label>Grösse (m²) · optional<input id="cleanArea" type="number" min="0" inputmode="decimal"></label></div>
         <p class="helper">Wähle einen Raum und markiere die notwendigen Arbeiten.</p>
+        <div class="room-add-control"><select id="cleaningRoomType"></select><button type="button" id="addCleaningRoom">＋ Raum hinzufügen</button></div>
         <div class="room-grid" id="cleaningRoomGrid">
-          <button data-clean-room="bedroom"><span>▱</span><strong>Schlafzimmer</strong><small>0 Arbeiten</small></button><button data-clean-room="bathroom"><span>◫</span><strong>Badezimmer</strong><small>0 Arbeiten</small></button><button data-clean-room="living"><span>▰</span><strong>Wohnzimmer</strong><small>0 Arbeiten</small></button><button data-clean-room="kitchen"><span>⌑</span><strong>Küche</strong><small>0 Arbeiten</small></button><button data-clean-room="laundry"><span>◉</span><strong>Waschküche</strong><small>0 Arbeiten</small></button><button data-clean-room="other"><span>＋</span><strong>Sonstiges</strong><small>0 Arbeiten</small></button>
+          <button data-clean-room="bedroom"><span>▱</span><strong>Schlafzimmer</strong><small>0 Arbeiten</small></button><button data-clean-room="bathroom"><span>◫</span><strong>Badezimmer</strong><small>0 Arbeiten</small></button><button data-clean-room="living"><span>▰</span><strong>Wohnzimmer</strong><small>0 Arbeiten</small></button><button data-clean-room="kitchen"><span>⌑</span><strong>Küche</strong><small>0 Arbeiten</small></button><button data-clean-room="laundry"><span>◉</span><strong>Waschküche</strong><small>0 Arbeiten</small></button><button data-clean-room="hallway"><span>↔</span><strong>Gang</strong><small>0 Arbeiten</small></button><button data-clean-room="basement"><span>▽</span><strong>Keller</strong><small>0 Arbeiten</small></button><button data-clean-room="garage"><span>▣</span><strong>Garage</strong><small>0 Arbeiten</small></button><button data-clean-room="other"><span>＋</span><strong>Sonstiges</strong><small>0 Arbeiten</small></button>
         </div>
         <p class="list-label">Mitzunehmende Ausrüstung</p>
         <div class="equipment-list" id="equipmentList">
@@ -365,6 +369,31 @@ header.topbar{height:82px!important}.topbar button.brand{width:210px!important;h
   .quantity-stepper button:hover{background:#e6e6df!important}
 }
 
+.property-type-inline{margin:14px 0}
+.property-type-inline label{display:grid;gap:7px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#6f706a}
+.property-type-inline select,.room-add-control select{min-height:52px;border:1px solid #deded8;border-radius:14px;background:#fff;padding:0 14px;font:inherit;font-weight:700;color:#171717}
+.room-add-control{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin:12px 0 18px}
+.room-add-control button{min-height:52px;border:0;border-radius:14px;padding:0 18px;background:#171717;color:#fff;font-weight:800}
+.room-grid .room-instance{position:relative;min-width:0;border:1px solid #e0e0da;border-radius:16px;background:#fff;overflow:hidden}
+.room-grid .room-instance-main{width:100%;min-height:150px;border:0;background:transparent;padding:18px 72px 18px 18px;text-align:left;display:grid;grid-template-columns:auto 1fr;column-gap:11px;align-items:center;border-radius:0;box-shadow:none}
+.room-grid .room-instance-main>span{grid-row:1/3;font-size:21px}
+.room-grid .room-instance-main strong,.room-grid .room-instance-main small{display:block;grid-column:2}
+.room-grid .room-instance-main small{color:#777}
+.room-grid .room-instance.has-items{border-color:#0a9c3a;background:#f4fbf6}
+.room-instance-actions{position:absolute!important;right:8px;top:5px;bottom:auto!important;width:48px!important;height:auto!important;display:grid!important;grid-template-rows:repeat(3,31px)!important;align-content:start!important;gap:4px!important;padding:4px!important;background:rgba(255,255,255,.9);border:1px solid rgba(22,22,22,.06);border-radius:15px;box-shadow:0 5px 16px rgba(20,20,20,.08);backdrop-filter:blur(5px)}
+.room-grid .room-instance-actions button{position:relative!important;inset:auto!important;flex:none!important;width:40px!important;max-width:40px!important;height:31px!important;min-height:31px!important;max-height:31px!important;border:0!important;border-radius:10px!important;padding:0!important;margin:0!important;display:block!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.035),0 1px 2px rgba(0,0,0,.06)!important;font-size:0!important;line-height:1;color:inherit;transition:transform .12s ease,filter .12s ease,box-shadow .12s ease}
+.room-grid .room-instance-actions .room-add-same{background:#e4f7ea;color:#078437}
+.room-grid .room-instance-actions .room-rename{background:#e8f0ff;color:#2454d8}
+.room-grid .room-instance-actions .room-delete{background:#ffebed;color:#d9222d}
+.room-grid .room-instance-actions button:active{filter:brightness(.94);transform:scale(.92);box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)!important}
+.room-add-same::before,.room-add-same::after{content:"";position:absolute;left:50%;top:50%;width:15px;height:2.5px;border-radius:3px;background:currentColor;transform:translate(-50%,-50%)}
+.room-add-same::after{transform:translate(-50%,-50%) rotate(90deg)}
+.room-rename::before{content:"";position:absolute;left:12px;top:13px;width:16px;height:5px;border-radius:3px 1px 1px 3px;background:currentColor;transform:rotate(-42deg)}
+.room-rename::after{content:"";position:absolute;left:9px;top:20px;width:0;height:0;border-top:3px solid transparent;border-bottom:3px solid transparent;border-right:5px solid currentColor;transform:rotate(-42deg)}
+.room-delete::before{content:"";position:absolute;left:14px;top:11px;width:12px;height:13px;border:2px solid currentColor;border-top:0;border-radius:0 0 3px 3px;box-sizing:border-box}
+.room-delete::after{content:"";position:absolute;left:12px;top:8px;width:16px;height:2px;border-radius:2px;background:currentColor;box-shadow:5px -3px 0 -1px currentColor}
+@media(max-width:700px){.room-add-control{grid-template-columns:1fr}.room-add-control button{width:100%}.room-grid .room-instance-main{min-height:150px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@5.0.8/dist/jspdf.plugin.autotable.min.js"></script>
@@ -394,6 +423,9 @@ const dynamicCopy={
 Object.assign(dynamicCopy.English,{Standardkarton:'Standard cardboard box',Gläserkarton:'Glassware box','Kleiderbox mit Kleiderstange':'Wardrobe box with hanging rail',Kunststoffbox:'Plastic transport box','Kartons & Boxen':'Boxes'});
 Object.assign(dynamicCopy['Português'],{Standardkarton:'Caixa de papelão padrão',Gläserkarton:'Caixa para vidrarias','Kleiderbox mit Kleiderstange':'Caixa de roupas com porta-cabides',Kunststoffbox:'Caixa plástica de transporte','Kartons & Boxen':'Caixas'});
 Object.assign(dynamicCopy['Español'],{Standardkarton:'Caja de cartón estándar',Gläserkarton:'Caja para cristalería','Kleiderbox mit Kleiderstange':'Caja de ropa con barra para perchas',Kunststoffbox:'Caja plástica de transporte','Kartons & Boxen':'Cajas'});
+Object.assign(dynamicCopy.English,{Lichtschacht:'Window well',Einzelgarage:'Single garage',Doppelgarage:'Double garage',Einbauschrank:'Built-in wardrobe'});
+Object.assign(dynamicCopy['Português'],{Lichtschacht:'Poço de luz',Einzelgarage:'Garagem individual',Doppelgarage:'Garagem dupla',Einbauschrank:'Armário embutido'});
+Object.assign(dynamicCopy['Español'],{Lichtschacht:'Patio de luz',Einzelgarage:'Garaje individual',Doppelgarage:'Garaje doble',Einbauschrank:'Armario empotrado'});
 Object.assign(dynamicCopy.English,{'Kleine Leiter':'Small ladder','Grosse Leiter':'Large ladder',Staubsauger:'Vacuum cleaner',Hochdruckreiniger:'Pressure washer'});Object.assign(dynamicCopy['Português'],{'Kleine Leiter':'Escada pequena','Grosse Leiter':'Escada grande',Staubsauger:'Aspirador de pó',Hochdruckreiniger:'Lavadora de alta pressão'});Object.assign(dynamicCopy['Español'],{'Kleine Leiter':'Escalera pequeña','Grosse Leiter':'Escalera grande',Staubsauger:'Aspiradora',Hochdruckreiniger:'Hidrolavadora'});
 function dynamicText(value){return dynamicCopy[currentLanguage]?.[value]||copy[currentLanguage]?.[value]||value}
 function dynamicSize(value){if(!value)return value;const door=value.match(/^(\d+) Tür/);if(door)return currentLanguage==='English'?`${door[1]} ${door[1]==='1'?'door':'doors'}`:currentLanguage==='Português'?`${door[1]} ${door[1]==='1'?'porta':'portas'}`:currentLanguage==='Español'?`${door[1]} ${door[1]==='1'?'puerta':'puertas'}`:value;return dynamicText(value)}
@@ -443,11 +475,64 @@ function seedItems(){document.querySelector('#itemList').innerHTML='';Object.ent
 document.querySelector('#roomsContinue').addEventListener('click',()=>{if(hasService('cleaning'))showView('cleaning');else{seedItems();showView('items')}});
 document.querySelector('#roomsDetailsButton').addEventListener('click',()=>{seedItems();showView('details')});
 document.querySelector('#skipDetailsButton').addEventListener('click',()=>showView('items'));
-const cleaningTasks={bedroom:['Staub entfernen','Boden saugen','Boden reinigen','Schränke innen','Schränke aussen','Türen und Sockelleisten','Fenster','Storen / Rollläden'],bathroom:['WC','Dusche / Badewanne','Fliesen','Spiegel','Schränke','Kalk entfernen','Abflüsse'],living:['Staub entfernen','Boden saugen','Boden reinigen','Türen und Sockelleisten','Fenster','Storen / Rollläden','Radiatoren','Möbel reinigen'],kitchen:['Backofen','Kühlschrank','Geschirrspüler','Dunstabzug','Schränke innen','Schränke aussen','Arbeitsflächen','Spüle','Entfetten'],laundry:['Waschmaschine','Trockner','Waschbecken','Schränke','Boden','Abflüsse'],other:['Balkon / Terrasse','Treppen','Keller','Garage','Glasflächen','Abfall entsorgen']};
+const cleaningTasks={bedroom:['Staub entfernen','Boden saugen','Boden reinigen','Schränke innen','Schränke aussen','Türen und Sockelleisten','Fenster','Storen / Rollläden','Einbauschrank'],bathroom:['WC','Dusche / Badewanne','Fliesen','Spiegel','Schränke','Kalk entfernen','Abflüsse'],living:['Staub entfernen','Boden saugen','Boden reinigen','Türen und Sockelleisten','Fenster','Storen / Rollläden','Radiatoren','Möbel reinigen','Einbauschrank'],kitchen:['Backofen','Kühlschrank','Geschirrspüler','Dunstabzug','Schränke innen','Schränke aussen','Arbeitsflächen','Spüle','Entfetten','Fenster','Storen / Rollläden','Einbauschrank'],laundry:['Waschmaschine','Trockner','Waschbecken','Schränke','Boden','Abflüsse'],hallway:['Einbauschrank'],basement:['Fenster','Lichtschacht','Einbauschrank'],garage:['Einzelgarage','Doppelgarage','Fenster','Waschbecken'],other:['Balkon / Terrasse','Treppen','Glasflächen','Abfall entsorgen']};
 const cleaningModal=document.querySelector('#cleaningModal');
 function translateCleaningModal(room){document.querySelector('#cleaningTitle').textContent=dynamicText(roomLabels[room]);document.querySelectorAll('[data-clean-task]').forEach(button=>{button.childNodes[0].nodeValue=dynamicText(button.dataset.cleanTask)})}
 function updateCleaningCounts(){let total=0;document.querySelectorAll('[data-clean-room]').forEach(button=>{const count=(selectedCleaning[button.dataset.cleanRoom]||[]).length;total+=count;button.querySelector('small').textContent=`${count} Arbeiten`;button.classList.toggle('has-items',count>0)});document.querySelector('#cleaningSummary strong').textContent=total}
-function openCleaningRoom(room){activeCleaningRoom=room;selectedCleaning[room]??=[];document.querySelector('#cleaningTitle').textContent=roomLabels[room];document.querySelector('#cleaningTaskList').innerHTML=cleaningTasks[room].map(name=>`<button class="furniture-item ${selectedCleaning[room].includes(name)?'selected':''}" data-clean-task="${name}">${name}<span>${selectedCleaning[room].includes(name)?'✓':''}</span></button>`).join('');document.querySelectorAll('[data-clean-task]').forEach(button=>button.addEventListener('click',()=>{const name=button.dataset.cleanTask,index=selectedCleaning[room].indexOf(name);if(index>=0)selectedCleaning[room].splice(index,1);else selectedCleaning[room].push(name);button.classList.toggle('selected');button.querySelector('span').textContent=button.classList.contains('selected')?'✓':'';updateCleaningCounts()}));translateCleaningModal(room);cleaningModal.classList.add('open')}
+const cleaningQuantityTasks=new Set(['Fenster','Storen / Rollläden','Lichtschacht','Waschbecken','Radiatoren','WC','Dusche / Badewanne','Spiegel']);
+function cleaningTaskBase(value){return value.replace(/ × \d+$/,'').replace(/^Einbauschrank \(\d+er\)$/,'Einbauschrank')}
+function cleaningTaskQty(value){return Number(value.match(/ × (\d+)$/)?.[1]||1)}
+function storedCleaningTask(room,name){return (selectedCleaning[room]||[]).find(item=>cleaningTaskBase(item)===name)}
+function setCleaningTaskQty(room,entry,name,qty){
+  selectedCleaning[room]=selectedCleaning[room].filter(item=>item!==entry);
+  if(name==='Einbauschrank'){
+    const size=entry?.match(/\((\d+er)\)/)?.[1]||'1er';
+    selectedCleaning[room].push(`Einbauschrank (${size})${qty>1?` × ${qty}`:''}`)
+  }else selectedCleaning[room].push(`${name}${qty>1?` × ${qty}`:''}`)
+}
+function openCleaningRoom(room){
+  activeCleaningRoom=room;
+  selectedCleaning[room]??=[];
+  document.querySelector('#cleaningTitle').textContent=roomLabels[room];
+  const builtInEntry=selectedCleaning[room].find(item=>/^Einbauschrank \(\d+er\)(?: × \d+)?$/.test(item));
+  const builtInSize=builtInEntry?.match(/\((\d+er)\)/)?.[1]||'';
+  const builtInQty=cleaningTaskQty(builtInEntry||'');
+  document.querySelector('#cleaningTaskList').innerHTML=cleaningTasks[room].map(name=>{
+    if(name==='Einbauschrank')return `<div class="furniture-entry ${builtInEntry?'selected':''}"><button class="furniture-item ${builtInEntry?'selected':''}" data-clean-task="Einbauschrank">${dynamicText('Einbauschrank')}<span>${builtInEntry?'✓':''}</span></button><div class="item-options"><div class="quantity-stepper"><button data-clean-qty-minus="Einbauschrank">−</button><strong>${builtInQty}</strong><button data-clean-qty-plus="Einbauschrank">+</button></div><select class="size-select" id="cleanBuiltInSize"><option value="">${currentLanguage==='English'?'Choose size':currentLanguage==='Português'?'Escolher tamanho':currentLanguage==='Español'?'Elegir tamaño':'Grösse wählen'}</option>${Array.from({length:10},(_,index)=>`${index+1}er`).map(size=>`<option value="${size}" ${builtInSize===size?'selected':''}>${size}</option>`).join('')}</select></div></div>`;
+    const selectedEntry=storedCleaningTask(room,name),selected=Boolean(selectedEntry),qty=cleaningTaskQty(selectedEntry||'');
+    if(cleaningQuantityTasks.has(name))return `<div class="furniture-entry ${selected?'selected':''}"><button class="furniture-item ${selected?'selected':''}" data-clean-task="${name}">${name}<span>${selected?'✓':''}</span></button><div class="item-options"><div class="quantity-stepper"><button data-clean-qty-minus="${name}">−</button><strong>${qty}</strong><button data-clean-qty-plus="${name}">+</button></div><span class="size-placeholder">${currentLanguage==='English'?'Quantity':currentLanguage==='Português'?'Quantidade':currentLanguage==='Español'?'Cantidad':'Menge'}</span></div></div>`;
+    return `<button class="furniture-item ${selected?'selected':''}" data-clean-task="${name}">${name}<span>${selected?'✓':''}</span></button>`
+  }).join('');
+  document.querySelectorAll('[data-clean-task]').forEach(button=>button.addEventListener('click',()=>{
+    const name=button.dataset.cleanTask;
+    if(name==='Einbauschrank'){
+      selectedCleaning[room]=selectedCleaning[room].filter(item=>!/^Einbauschrank(?: \(\d+er\))?(?: × \d+)?$/.test(item));
+      if(!builtInEntry)selectedCleaning[room].push('Einbauschrank (1er)');
+    }else{
+      const selectedEntry=storedCleaningTask(room,name),index=selectedCleaning[room].indexOf(selectedEntry);
+      if(index>=0)selectedCleaning[room].splice(index,1);else{
+        if(room==='garage'&&(name==='Einzelgarage'||name==='Doppelgarage'))selectedCleaning[room]=selectedCleaning[room].filter(item=>item!=='Einzelgarage'&&item!=='Doppelgarage');
+        selectedCleaning[room].push(name)
+      }
+    }
+    openCleaningRoom(room);updateCleaningCounts()
+  }));
+  document.querySelector('#cleanBuiltInSize')?.addEventListener('change',event=>{
+    selectedCleaning[room]=selectedCleaning[room].filter(item=>!/^Einbauschrank(?: \(\d+er\))?(?: × \d+)?$/.test(item));
+    if(event.target.value)selectedCleaning[room].push(`Einbauschrank (${event.target.value})${builtInQty>1?` × ${builtInQty}`:''}`);
+    openCleaningRoom(room);updateCleaningCounts()
+  });
+  document.querySelectorAll('[data-clean-qty-minus]').forEach(button=>button.addEventListener('click',()=>{
+    const name=button.dataset.cleanQtyMinus,entry=storedCleaningTask(room,name);if(!entry)return;
+    setCleaningTaskQty(room,entry,name,Math.max(1,cleaningTaskQty(entry)-1));openCleaningRoom(room);updateCleaningCounts()
+  }));
+  document.querySelectorAll('[data-clean-qty-plus]').forEach(button=>button.addEventListener('click',()=>{
+    const name=button.dataset.cleanQtyPlus,entry=storedCleaningTask(room,name);if(!entry)return;
+    setCleaningTaskQty(room,entry,name,cleaningTaskQty(entry)+1);openCleaningRoom(room);updateCleaningCounts()
+  }));
+  translateCleaningModal(room);
+  cleaningModal.classList.add('open')
+}
 document.querySelectorAll('[data-clean-room]').forEach(button=>button.addEventListener('click',()=>openCleaningRoom(button.dataset.cleanRoom)));document.querySelectorAll('.close-cleaning').forEach(button=>button.addEventListener('click',()=>cleaningModal.classList.remove('open')));
 document.querySelector('#addCustomCleaning').addEventListener('click',()=>{const input=document.querySelector('#customCleaningInput'),name=input.value.trim();if(!name||!activeCleaningRoom)return;if(!selectedCleaning[activeCleaningRoom].includes(name))selectedCleaning[activeCleaningRoom].push(name);input.value='';openCleaningRoom(activeCleaningRoom);updateCleaningCounts()});
 document.querySelectorAll('.choice-chips button').forEach(button=>button.addEventListener('click',()=>button.classList.toggle('selected')));
@@ -1025,7 +1110,7 @@ printButtonV2.addEventListener('click',()=>{const offer=offers.find(item=>item.i
       y=addHeading(doc,'Servicedaten',y);
       const serviceNames=[services.includes('moving')?'Umzug':'',services.includes('cleaning')?'Reinigung':'',services.includes('disposal')?'Entsorgung':''].filter(Boolean).join(', ');
       y=table(doc,['Angabe','Wert'],[
-        ['Service',blank(serviceNames)],['Datum',blank(offer.date||details.date)],['Dauer',blank(details.duration)],
+        ['Service',blank(serviceNames)],['Objekttyp',blank(details.propertyType||offer.cleaningTechnical?.propertyType)],['Datum',blank(offer.date||details.date)],['Dauer',blank(details.duration)],
         [addressLabel,blank(details.origin)],['Etage',blank(details.originFloor)],['Lift',details.originElevator?'[x] Ja   [ ] Nein':'[ ] Ja   [ ] Nein'],
         ...(services.includes('moving')?[['Zieladresse',blank(details.destination)],['Etage Ziel',blank(details.destinationFloor)],['Lift Ziel',details.destinationElevator?'[x] Ja   [ ] Nein':'[ ] Ja   [ ] Nein']]:[])
       ],y);
@@ -1114,7 +1199,7 @@ printButtonV2.addEventListener('click',()=>{const offer=offers.find(item=>item.i
         ['Telefon',blank(client.phone)],['E-Mail',blank(client.email)],['Rechnungsadresse',blank(client.address)]
       ]));
       children.push(section('Servicedaten'));
-      const serviceRows=[['Service',blank(serviceNames)],['Datum',blank(offer.date||details.date)],['Dauer',blank(details.duration)],[addressLabel,blank(details.origin)],['Etage',blank(details.originFloor)],['Lift',details.originElevator?'Ja':'Nein']];
+      const serviceRows=[['Service',blank(serviceNames)],['Objekttyp',blank(details.propertyType||offer.cleaningTechnical?.propertyType)],['Datum',blank(offer.date||details.date)],['Dauer',blank(details.duration)],[addressLabel,blank(details.origin)],['Etage',blank(details.originFloor)],['Lift',details.originElevator?'Ja':'Nein']];
       if(services.includes('moving'))serviceRows.push(['Zieladresse',blank(details.destination)],['Etage Ziel',blank(details.destinationFloor)],['Lift Ziel',details.destinationElevator?'Ja':'Nein']);
       children.push(keyTable(serviceRows));
 
@@ -1296,6 +1381,137 @@ printButtonV2.addEventListener('click',()=>{const offer=offers.find(item=>item.i
     }
   });
   updateDataSummary();renderOffers();
+})();
+
+(function(){
+  const movingBases=['bedroom','bathroom','living','kitchen','laundry','hallway','balcony','garage','basement','other','packing'];
+  const cleaningBases=['bedroom','bathroom','living','kitchen','laundry','hallway','basement','garage','other'];
+  const noNumber=new Set(['other','packing']);
+  const icons={bedroom:'▱',bathroom:'◫',living:'▰',kitchen:'⌑',laundry:'◉',hallway:'↔',balcony:'☀',garage:'▣',basement:'▽',other:'＋',packing:'▦'};
+  const makeKey=(base,index)=>`${base}::${index}`;
+  const baseOf=key=>String(key).split('::')[0];
+  const indexOfKey=key=>Number(String(key).split('::')[1]||1);
+  const defaultKeys=bases=>bases.map(base=>makeKey(base,1));
+  let state={moving:{keys:defaultKeys(movingBases),names:{}},cleaning:{keys:defaultKeys(cleaningBases),names:{}}};
+
+  function clone(value){return JSON.parse(JSON.stringify(value))}
+  function germanLabel(key,names={}){
+    if(names[key])return names[key];
+    const base=baseOf(key),root=roomLabels[base]||base;
+    return noNumber.has(base)?root:`${root} ${indexOfKey(key)}`
+  }
+  function registerKey(key,names={}){
+    const base=baseOf(key),label=germanLabel(key,names);
+    roomLabels[key]=label;
+    if(furnitureCatalog[base])furnitureCatalog[key]=furnitureCatalog[base];
+    if(cleaningTasks[base])cleaningTasks[key]=cleaningTasks[base]
+  }
+  function keysFromData(kind,bases){
+    const source=kind==='moving'?selectedFurniture:selectedCleaning;
+    const found=Object.keys(source||{}).filter(key=>bases.includes(baseOf(key)));
+    return found.length?found:defaultKeys(bases)
+  }
+  function loadState(){
+    const saved=currentDetails?.roomState||{};
+    state={
+      moving:{keys:Array.isArray(saved.moving?.keys)?saved.moving.keys:keysFromData('moving',movingBases),names:{...(saved.moving?.names||{})}},
+      cleaning:{keys:Array.isArray(saved.cleaning?.keys)?saved.cleaning.keys:keysFromData('cleaning',cleaningBases),names:{...(saved.cleaning?.names||{})}}
+    };
+    state.moving.keys.forEach(key=>registerKey(key,state.moving.names));
+    state.cleaning.keys.forEach(key=>registerKey(key,state.cleaning.names))
+  }
+  function persistState(){
+    currentDetails=currentDetails||{};
+    currentDetails.roomState=clone(state);
+    const property=document.querySelector('#servicePropertyType')?.value||'';
+    if(property)currentDetails.propertyType=property;else delete currentDetails.propertyType
+  }
+  function translatedBase(base){return dynamicText(roomLabels[base]||base)}
+  function fillTypeSelect(id,bases){
+    const select=document.querySelector(id);if(!select)return;
+    select.innerHTML=bases.filter(base=>!noNumber.has(base)).map(base=>`<option value="${base}">${safe(translatedBase(base))}</option>`).join('')
+  }
+  function nextKey(kind,base){
+    const indexes=state[kind].keys.filter(key=>baseOf(key)===base).map(indexOfKey);
+    return makeKey(base,Math.max(0,...indexes)+1)
+  }
+  function ensureData(kind,key){
+    if(kind==='moving'){
+      selectedFurniture[key]??=[];furnitureMeta[key]??={};
+      if(typeof furnitureVariants!=='undefined')furnitureVariants[key]??={}
+    }else selectedCleaning[key]??=[]
+  }
+  function addRoom(kind,base){
+    const key=nextKey(kind,base),keys=state[kind].keys,lastSame=keys.reduce((last,item,index)=>baseOf(item)===base?index:last,-1);
+    keys.splice(lastSame>=0?lastSame+1:keys.length,0,key);ensureData(kind,key);
+    registerKey(key,state[kind].names);persistState();render(kind)
+  }
+  function removeRoom(kind,key){
+    if(!confirm(currentLanguage==='English'?'Delete this room?':currentLanguage==='Português'?'Excluir este ambiente?':currentLanguage==='Español'?'¿Eliminar este ambiente?':'Diesen Raum löschen?'))return;
+    state[kind].keys=state[kind].keys.filter(item=>item!==key);delete state[kind].names[key];
+    if(kind==='moving'){delete selectedFurniture[key];delete furnitureMeta[key];if(typeof furnitureVariants!=='undefined')delete furnitureVariants[key]}
+    else delete selectedCleaning[key];
+    persistState();render(kind)
+  }
+  function renameRoom(kind,key){
+    const label=prompt(currentLanguage==='English'?'Room name':currentLanguage==='Português'?'Nome do ambiente':currentLanguage==='Español'?'Nombre del ambiente':'Raumname',germanLabel(key,state[kind].names));
+    if(!label?.trim())return;state[kind].names[key]=label.trim();registerKey(key,state[kind].names);persistState();render(kind)
+  }
+  function moveRoom(kind,key,direction){
+    const keys=state[kind].keys,index=keys.indexOf(key),target=index+direction;if(index<0||target<0||target>=keys.length)return;
+    [keys[index],keys[target]]=[keys[target],keys[index]];persistState();render(kind)
+  }
+  function card(kind,key){
+    registerKey(key,state[kind].names);
+    const names=kind==='moving'?(selectedFurniture[key]||[]):(selectedCleaning[key]||[]),count=names.length,base=baseOf(key);
+    const unit=kind==='moving'?(currentLanguage==='English'?'items':currentLanguage==='Português'?'itens':currentLanguage==='Español'?'artículos':'Artikel'):(currentLanguage==='English'?'tasks':currentLanguage==='Português'?'tarefas':currentLanguage==='Español'?'tareas':'Arbeiten');
+    const label=state[kind].names[key]||`${translatedBase(base)}${noNumber.has(base)?'':` ${indexOfKey(key)}`}`;
+    const attr=kind==='moving'?'data-room':'data-clean-room';
+    return `<article class="room-instance ${count?'has-items':''}" data-instance="${safe(key)}"><button type="button" class="room-instance-main" ${attr}="${safe(key)}"><span>${icons[base]||'□'}</span><strong>${safe(label)}</strong><small>${count} ${unit}</small></button><div class="room-instance-actions"><button type="button" class="room-add-same" data-room-add title="${currentLanguage==='English'?'Add another':currentLanguage==='Português'?'Adicionar outro':currentLanguage==='Español'?'Añadir otro':'Weiteren Raum hinzufügen'}">＋</button><button type="button" class="room-rename" data-room-rename title="${currentLanguage==='English'?'Rename':currentLanguage==='Português'?'Renomear':currentLanguage==='Español'?'Renombrar':'Umbenennen'}">✎</button><button type="button" class="room-delete" data-room-delete title="${currentLanguage==='English'?'Delete':currentLanguage==='Português'?'Excluir':currentLanguage==='Español'?'Eliminar':'Löschen'}">⌫</button></div></article>`
+  }
+  function render(kind){
+    const grid=document.querySelector(kind==='moving'?'#roomGrid':'#cleaningRoomGrid');if(!grid)return;
+    grid.innerHTML=state[kind].keys.map(key=>card(kind,key)).join('');
+    grid.querySelectorAll(kind==='moving'?'[data-room]':'[data-clean-room]').forEach(button=>button.addEventListener('click',()=>kind==='moving'?openRoom(button.dataset.room):openCleaningRoom(button.dataset.cleanRoom)));
+    grid.querySelectorAll('.room-instance').forEach(article=>{
+      const key=article.dataset.instance;
+      article.querySelector('[data-room-add]').addEventListener('click',()=>addRoom(kind,baseOf(key)));
+      article.querySelector('[data-room-rename]').addEventListener('click',()=>renameRoom(kind,key));
+      article.querySelector('[data-room-delete]').addEventListener('click',()=>removeRoom(kind,key))
+    });
+    let total=0;state[kind].keys.forEach(key=>{total+=(kind==='moving'?(selectedFurniture[key]||[]):(selectedCleaning[key]||[])).length});
+    const summary=document.querySelector(kind==='moving'?'#checklistSummary strong':'#cleaningSummary strong');if(summary)summary.textContent=total
+  }
+  function renderAll(){
+    fillTypeSelect('#movingRoomType',movingBases);fillTypeSelect('#cleaningRoomType',cleaningBases);render('moving');render('cleaning');
+    const addText=currentLanguage==='English'?'＋ Add room':currentLanguage==='Português'?'＋ Adicionar ambiente':currentLanguage==='Español'?'＋ Añadir ambiente':'＋ Raum hinzufügen';
+    const movingAdd=document.querySelector('#addMovingRoom'),cleaningAdd=document.querySelector('#addCleaningRoom');if(movingAdd)movingAdd.textContent=addText;if(cleaningAdd)cleaningAdd.textContent=addText;
+    const property=document.querySelector('#servicePropertyType');if(property){property.value=currentDetails?.propertyType||'';property.closest('label').childNodes[0].nodeValue=currentLanguage==='English'?'Property type':currentLanguage==='Português'?'Tipo de imóvel':currentLanguage==='Español'?'Tipo de inmueble':'Objekttyp';const propertyNames={English:{Wohnung:'Apartment',Haus:'House',Gewerbe:'Commercial'},'Português':{Wohnung:'Apartamento',Haus:'Casa',Gewerbe:'Comercial'},'Español':{Wohnung:'Apartamento',Haus:'Casa',Gewerbe:'Comercial'}};[...property.options].forEach(option=>{if(!option.value)option.textContent=currentLanguage==='English'?'Select':currentLanguage==='Português'?'Selecionar':currentLanguage==='Español'?'Seleccionar':'Auswählen';else option.textContent=propertyNames[currentLanguage]?.[option.value]||option.value})}
+  }
+
+  if(!localStorage.getItem('laslo-room-instances-reset-v1')){
+    offers=[];localStorage.setItem('laslo-offers','[]');localStorage.removeItem('laslo-current-draft-v1');localStorage.removeItem('laslo-draft');localStorage.setItem('laslo-room-instances-reset-v1','1');renderOffers()
+  }
+  for(const offer of offers||[]){
+    const saved=offer.details?.roomState||{};
+    for(const kind of ['moving','cleaning'])for(const key of saved[kind]?.keys||[])registerKey(key,saved[kind]?.names||{})
+  }
+  loadState();renderAll();
+  const originalUpdateRoomCounts=updateRoomCounts;updateRoomCounts=function(){originalUpdateRoomCounts();document.querySelectorAll('#roomGrid .room-instance').forEach(card=>card.classList.toggle('has-items',card.querySelector('.room-instance-main')?.classList.contains('has-items')))};
+  const originalUpdateCleaningCounts=updateCleaningCounts;updateCleaningCounts=function(){originalUpdateCleaningCounts();document.querySelectorAll('#cleaningRoomGrid .room-instance').forEach(card=>card.classList.toggle('has-items',card.querySelector('.room-instance-main')?.classList.contains('has-items')))};
+  document.querySelector('#addMovingRoom')?.addEventListener('click',()=>addRoom('moving',document.querySelector('#movingRoomType').value));
+  document.querySelector('#addCleaningRoom')?.addEventListener('click',()=>addRoom('cleaning',document.querySelector('#cleaningRoomType').value));
+  document.querySelector('#servicePropertyType')?.addEventListener('change',event=>{currentDetails.propertyType=event.target.value;persistState()});
+  document.querySelector('#cleanPropertyType')?.addEventListener('change',event=>{if(event.target.value)currentDetails.propertyType=event.target.value});
+  const originalShowView=showView;showView=function(name){
+    originalShowView(name);
+    if(name==='rooms'||name==='cleaning'){loadState();renderAll()}
+  };
+  document.querySelector('#detailsForm')?.addEventListener('submit',()=>persistState());
+  ['#roomsContinue','#cleaningContinue','#skipDetailsButton','#saveOfferButton'].forEach(selector=>document.querySelector(selector)?.addEventListener('click',persistState,{capture:true}));
+  document.querySelectorAll('[data-view="create"]').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{state={moving:{keys:defaultKeys(movingBases),names:{}},cleaning:{keys:defaultKeys(cleaningBases),names:{}}};currentDetails={roomState:clone(state)};renderAll()},0)));
+  document.querySelectorAll('.language-choice').forEach(button=>button.addEventListener('click',()=>setTimeout(renderAll,0)));
+  window.lasloRoomInstances={renderAll,persistState}
 })();
 
 </script>
